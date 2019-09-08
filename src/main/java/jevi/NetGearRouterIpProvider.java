@@ -50,6 +50,7 @@ public class NetGearRouterIpProvider implements PublicIpProvider {
                 return this.getIP();
             }
             Document doc = connection.get();
+            log.debug(doc.html());
             Elements elements = doc.select("input[name=wan_ipaddr]");
             if (elements.size() == 0) {
                 throw new RuntimeException("获取公网 ip 失败");

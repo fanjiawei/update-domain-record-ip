@@ -50,8 +50,8 @@ public class App {
 
         App app = new App();
         String publicIp = new NetGearRouterIpProvider(
-                cmd.getOptionValue("netgear-username"),
-                cmd.getOptionValue("netgear-password")
+                cmd.getOptionValue("netgear-username").trim(),
+                cmd.getOptionValue("netgear-password").trim()
         ).getIP().getHostAddress();
 
         log.debug("外网IP：" + publicIp);
