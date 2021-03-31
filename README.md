@@ -15,13 +15,14 @@ mvn assembly:assembly
 
 ## Usage
 
+修改 www.example.com 和 blog.example.com 的域名解析
 ```bash
 java -jar target/updateDomainRecordIp-1.0-SNAPSHOT-jar-with-dependencies.jar \
 -d example.com \
 -rid 1234 \
 -rn www \
---netgear-username admin \
---netgear-password 'password' \
+-rid 5678
+-rn blog \
 --access-key-id 9fan39ApGDHiHNhz \
 --access-key-secret kVBrq1nDHEUia6EPHkOAtNloADI1Jt \
 --signature-method HMAC-SHA1
@@ -31,10 +32,8 @@ java -jar target/updateDomainRecordIp-1.0-SNAPSHOT-jar-with-dependencies.jar \
 |参数名称|描述|
 |--------|----|
 |-d|域名|
-|-rid|record id|
-|-rn|record name，即子域名|
-|--netgear-username|netgear 路由器的管理员账号|
-|--netgear-password|netgear 路由器的管理员密码|
+|-rid|record id，可以传多个|
+|-rn|record name，即子域名，可以传多个，必须与 rid 一一对应|
 |--access-key-id|aliyun access key id|
 |--access-key-secret|aliyun access key secret|
 |--signature-method|aliyun signature method|

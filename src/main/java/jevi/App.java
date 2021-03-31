@@ -44,16 +44,14 @@ public class App {
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
 
-        log.debug(Arrays.toString(cmd.getOptionValues("domain")));
-        log.debug(cmd.getOptionValue("netgear-username"));
-        log.debug(cmd.getOptionValue("netgear-password"));
+        log.debug("domain={}", cmd.getOptionValue("domain"));
+        log.debug("netgear username={}", cmd.getOptionValue("netgear-username"));
+        log.debug("netgear password={}", cmd.getOptionValue("netgear-password"));
+        log.debug("record id={}", Arrays.toString(cmd.getOptionValues("rid")));
+        log.debug("record name={}", Arrays.toString(cmd.getOptionValues("rn")));
 
         App app = new App();
-        String publicIp = new NetGearRouterIpProvider(cmd.getOptionValue("netgear-username").trim(),
-                cmd.getOptionValue("netgear-password").trim()
-        )
-                .getIP()
-                .getHostAddress();
+        String publicIp = new HTTPIpProvider().getIP().getHostAddress();
 
         log.debug("外网IP：" + publicIp);
         log.debug("时间戳：" + app.getTimestamp());
@@ -63,20 +61,26 @@ public class App {
         App.SignatureMethod = cmd.getOptionValue("signature-method");
 
         String domain = cmd.getOptionValue("domain");
-        String recordId = cmd.getOptionValue("record-id");
-        String recordName = cmd.getOptionValue("record-name");
-        log.debug("access-key-id=" + App.AccessKeyId);
-        log.debug("access-key-secret=" + App.AccessKeySecret);
-        log.debug("signature-method=" + App.SignatureMethod);
-        log.debug("domain=" + domain);
-        log.debug("record-id=" + recordId);
-        log.debug("record-name=" + recordName);
+        String[] recordIds = cmd.getOptionValues("record-id");
+        String[] recordNames = cmd.getOptionValues("record-name");
+        if (recordIds.length != recordNames.length) {
+            throw new RuntimeException("record-id 和 record-name 的数量不一致，record-id 和 record-name 必须是一一对应的");
+        }
+        log.debug("access-key-id={}", App.AccessKeyId);
+        log.debug("access-key-secret={}", App.AccessKeySecret);
+        log.debug("signature-method={}", App.SignatureMethod);
+        log.debug("domain={}", domain);
+        log.debug("record-id={}", Arrays.toString(recordIds));
+        log.debug("record-name={}", Arrays.toString(recordNames));
 
-
-        if (app.publicIpIsChange(publicIp, recordName + '.' + domain)) {
-            app.updateDomainRecord(domain, recordId, recordName, publicIp);
-        } else {
-            log.debug("IP地址未变，不必修改，" + publicIp);
+        for (int i = 0; i < recordIds.length; i++) {
+            String recordId = recordIds[i];
+            String recordName = recordNames[i];
+            if (app.publicIpIsChange(publicIp, recordName + '.' + domain)) {
+                app.updateDomainRecord(domain, recordId, recordName, publicIp);
+            } else {
+                log.debug("{} IP地址未变，不必修改，{} ", recordName + '.' + domain, publicIp);
+            }
         }
     }
 
