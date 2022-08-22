@@ -1,11 +1,11 @@
 # update-domain-record-ip
 
-update-domain-record-ip 是一个同步域名解析到外网 ip 的工具，域名必须是在阿里云托管，且路由器必须是 netgear
+update-domain-record-ip 是一个同步域名解析到外网 ip 的工具，域名必须是在阿里云托管.
 
 ## 原理
 
 通过调用阿里云修改解析 api 实现，
-获取公网 ip 的是通过爬取路由器页面实现，目前只实现了爬取 netgear 的页面。
+获取公网 ip 的是通过返回ip地址的网站实现。
 
 ## 编译
 
